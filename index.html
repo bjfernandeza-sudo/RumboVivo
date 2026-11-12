@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rumbo Vivo — Turismo y Destinos</title>
+<meta name="description" content="Descubre playas, montañas, ciudades coloniales y selvas. Planifica tu próximo viaje con Rumbo Vivo." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --arena: #f6efe4;
+  --tinta: #1d2a2a;
+  --mar: #0e6e6e;
+  --mar-osc: #0a4b4b;
+  --coral: #e2704a;
+  --suave: #6b7a78;
+  --radio: 18px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: "Outfit", system-ui, sans-serif; background: var(--arena); color: var(--tinta); line-height: 1.6; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.1; }
+.contenedor { width: min(1150px, 92%); margin-inline: auto; }
+.seccion { padding: 6rem 0; }
+.etiqueta { text-transform: uppercase; letter-spacing: .2em; font-size: .78rem; color: var(--coral); font-weight: 600; }
+.titulo { font-size: clamp(2rem, 4vw, 3rem); margin: .5rem 0 1rem; }
+.btn { display: inline-block; padding: .9rem 1.8rem; border-radius: 999px; font-weight: 600; transition: transform .2s, background .2s; border: none; cursor: pointer; font: inherit; }
+.btn:hover { transform: translateY(-2px); }
+.btn-coral { background: var(--coral); color: #fff; }
+.btn-coral:hover { background: #c95a36; }
+.btn-borde { border: 2px solid #fff; color: #fff; }
+
+/* Navegación */
+header { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background .3s, box-shadow .3s; }
+header.solido { background: rgba(246,239,228,.95); backdrop-filter: blur(8px); box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+.nav { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+.logo { font-family: "Fraunces", serif; font-size: 1.5rem; font-weight: 700; color: #fff; }
+.logo span { color: var(--coral); }
+header.solido .logo, header.solido .menu a { color: var(--tinta); }
+.menu { display: flex; gap: 2rem; list-style: none; }
+.menu a { color: #fff; font-weight: 400; opacity: .9; }
+.menu a:hover { opacity: 1; color: var(--coral); }
+.hamburguesa { display: none; background: none; border: 0; color: #fff; font-size: 1.8rem; cursor: pointer; }
+header.solido .hamburguesa { color: var(--tinta); }
+
+/* Portada */
+.portada {
+  min-height: 100vh; display: grid; align-items: end; color: #fff; padding-bottom: 7rem;
+  background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.1) 40%, rgba(10,40,40,.8) 100%),
+  url("img/hero.png") center/cover no-repeat;
+}
+.portada h1 { font-size: clamp(2.8rem, 7vw, 5.6rem); max-width: 14ch; }
+.portada p { font-size: 1.2rem; max-width: 46ch; margin: 1.2rem 0 2rem; opacity: .92; font-weight: 300; }
+.portada .acciones { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+/* Cifras */
+.cifras { background: var(--mar-osc); color: #fff; padding: 2.5rem 0; }
+.cifras .contenedor { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center; }
+.cifras strong { display: block; font-family: "Fraunces", serif; font-size: 2.4rem; color: #ffd2b8; }
+.cifras span { opacity: .8; font-size: .95rem; }
+
+/* Destinos */
+.filtros { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.filtro { padding: .5rem 1.2rem; border-radius: 999px; border: 1.5px solid var(--mar); background: transparent; color: var(--mar); cursor: pointer; font: inherit; }
+.filtro.activo, .filtro:hover { background: var(--mar); color: #fff; }
+.grid-destinos { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+.tarjeta { background: #fff; border-radius: var(--radio); overflow: hidden; box-shadow: 0 10px 30px rgba(29,42,42,.08); transition: transform .3s, box-shadow .3s; display: flex; flex-direction: column; }
+.tarjeta:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(29,42,42,.15); }
+.tarjeta .foto { aspect-ratio: 4/3; overflow: hidden; position: relative; }
+.tarjeta .foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+.tarjeta:hover .foto img { transform: scale(1.07); }
+.tarjeta .tipo { position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,.92); padding: .25rem .8rem; border-radius: 999px; font-size: .8rem; font-weight: 600; color: var(--mar); }
+.tarjeta .cuerpo { padding: 1.3rem 1.4rem 1.5rem; display: flex; flex-direction: column; flex: 1; }
+.tarjeta h3 { font-size: 1.4rem; margin-bottom: .4rem; }
+.tarjeta p { color: var(--suave); font-size: .95rem; }
+.tarjeta .pie { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; font-size: .9rem; }
+.tarjeta .precio { font-weight: 600; color: var(--coral); }
+.btn-agregar { margin-top: 12px; width: 100%; padding: 10px; background: var(--mar); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; }
+.btn-agregar:hover { background: var(--mar-osc); }
+
+/* Experiencias */
+.experiencias { background: #fff; }
+.grid-exp { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2.5rem; }
+.exp { padding: 2rem; border-radius: var(--radio); background: var(--arena); }
+.exp .icono { font-size: 2.2rem; margin-bottom: 1rem; }
+.exp h3 { font-size: 1.3rem; margin-bottom: .5rem; }
+.exp p { color: var(--suave); }
+
+/* Consejos */
+.dividido { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.dividido img { border-radius: var(--radio); aspect-ratio: 4/5; object-fit: cover; width: 100%; }
+.lista-consejos { list-style: none; margin-top: 1.5rem; }
+.lista-consejos li { padding: 1rem 0; border-bottom: 1px solid #e3d8c6; display: flex; gap: 1rem; }
+.lista-consejos b { color: var(--mar); font-family: "Fraunces", serif; font-size: 1.3rem; }
+
+/* Testimonios */
+.testimonios { background: var(--mar); color: #fff; text-align: center; }
+.testimonio { max-width: 720px; margin: 0 auto; min-height: 190px; }
+.testimonio blockquote { font-family: "Fraunces", serif; font-size: clamp(1.3rem, 2.5vw, 1.8rem); line-height: 1.4; }
+.testimonio cite { display: block; margin-top: 1.2rem; font-style: normal; opacity: .8; }
+.puntos { display: flex; justify-content: center; gap: .6rem; margin-top: 1.5rem; }
+.puntos button { width: 11px; height: 11px; border-radius: 50%; border: 0; background: rgba(255,255,255,.4); cursor: pointer; }
+.puntos button.activo { background: #fff; }
+
+/* Contacto */
+.formulario { background: #fff; padding: 2.5rem; border-radius: var(--radio); box-shadow: 0 10px 30px rgba(29,42,42,.08); display: grid; gap: 1rem; }
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+label { font-size: .9rem; font-weight: 600; display: grid; gap: .35rem; }
+input, select, textarea { font: inherit; padding: .8rem 1rem; border-radius: 10px; border: 1.5px solid #e3d8c6; background: var(--arena); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--mar); }
+.oculto { display: none; }
+.mensaje-ok { display: none; padding: 1rem; border-radius: 10px; background: #e3f3ef; color: var(--mar-osc); font-weight: 600; }
+
+footer { background: var(--tinta); color: #cfd6d4; padding: 3rem 0 2rem; }
+footer .contenedor { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; align-items: center; }
+footer .logo { color: #fff; }
+
+/* Animación al hacer scroll */
+.aparecer { opacity: 0; transform: translateY(30px); transition: opacity .8s, transform .8s; }
+.aparecer.visible { opacity: 1; transform: none; }
+
+@media (max-width: 860px) {
+  .menu { position: fixed; top: 76px; left: 0; right: 0; flex-direction: column; background: var(--arena); padding: 1.5rem 2rem; gap: 1.2rem; display: none; }
+  .menu.abierto { display: flex; }
+  .menu a { color: var(--tinta); }
+  .hamburguesa { display: block; }
+  .cifras .contenedor { grid-template-columns: repeat(2, 1fr); }
+  .grid-exp, .dividido, .fila { grid-template-columns: 1fr; }
+  .dividido { gap: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVEGACIÓN ===== -->
+<header id="cabecera">
+  <nav class="contenedor nav">
+    <a href="#inicio" class="logo">Rumbo<span>Vivo</span></a>
+    <button class="hamburguesa" id="hamburguesa" aria-label="Abrir menú">☰</button>
+    <ul class="menu" id="menu">
+      <li><a href="#destinos">Destinos</a></li>
+      <li><a href="#experiencias">Experiencias</a></li>
+      <li><a href="#consejos">Consejos</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ===== PORTADA ===== -->
+<section class="portada" id="inicio">
+  <div class="contenedor">
+    <p class="etiqueta">Turismo · Aventura · Cultura</p>
+    <h1>El mundo te espera, sal a descubrirlo</h1>
+    <p>Playas de agua cristalina, montañas que tocan las nubes y ciudades llenas de historia. Encuentra tu próximo destino con nosotros.</p>
+    <div class="acciones">
+      <a href="#destinos" class="btn btn-coral">Ver destinos</a>
+      <a href="#contacto" class="btn btn-borde">Planificar viaje</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CIFRAS ===== -->
+<section class="cifras">
+  <div class="contenedor">
+    <div><strong data-contar="120">0</strong><span>Destinos</span></div>
+    <div><strong data-contar="15000">0</strong><span>Viajeros felices</span></div>
+    <div><strong data-contar="45">0</strong><span>Guías locales</span></div>
+    <div><strong data-contar="12">0</strong><span>Años de experiencia</span></div>
+  </div>
+</section>
+
+<!-- ===== DESTINOS ===== -->
+<section class="seccion" id="destinos">
+  <div class="contenedor">
+    <p class="etiqueta">Destinos populares</p>
+    <h2 class="titulo">¿A dónde quieres ir?</h2>
+    <div class="filtros">
+      <button class="filtro activo" data-filtro="todos">Todos</button>
+      <button class="filtro" data-filtro="playa">Playa</button>
+      <button class="filtro" data-filtro="montana">Montaña</button>
+      <button class="filtro" data-filtro="ciudad">Ciudad</button>
+      <button class="filtro" data-filtro="naturaleza">Naturaleza</button>
+    </div>
+    <div class="grid-destinos">
+      <article class="tarjeta aparecer" data-tipo="playa">
+        <div class="foto">
+          <img src="img/playa.png" alt="Playa de arena blanca con palmeras" loading="lazy" />
+          <span class="tipo">Playa</span>
+        </div>
+        <div class="cuerpo">
+          <h3>Costa Turquesa</h3>
+          <p>Arena blanca, palmeras y aguas cálidas ideales para bucear y descansar.</p>
+          <div class="pie"><span>★ 4.9 · 5 días</span><span class="precio">Desde $2.360.000 COP</span></div>
+          <button class="btn-agregar" data-nombre="Costa Turquesa" data-precio="2360000">🛒 Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="tarjeta aparecer" data-tipo="montana">
+        <div class="foto">
+          <img src="img/montana.png" alt="Picos de montaña con valle entre la niebla" loading="lazy" />
+          <span class="tipo">Montaña</span>
+        </div>
+        <div class="cuerpo">
+          <h3>Cumbres Andinas</h3>
+          <p>Senderos entre picos nevados, lagunas glaciares y amaneceres inolvidables.</p>
+          <div class="pie"><span>★ 4.8 · 7 días</span><span class="precio">Desde $3.280.000 COP</span></div>
+          <button class="btn-agregar" data-nombre="Cumbres Andinas" data-precio="3280000">🛒 Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="tarjeta aparecer" data-tipo="ciudad">
+        <div class="foto">
+          <img src="img/ciudad.png" alt="Calle colonial empedrada con balcones de flores" loading="lazy" />
+          <span class="tipo">Ciudad</span>
+        </div>
+        <div class="cuerpo">
+          <h3>Casco Colonial</h3>
+          <p>Calles empedradas, gastronomía local, museos y arquitectura de otra época.</p>
+          <div class="pie"><span>★ 4.7 · 3 días</span><span class="precio">Desde $1.360.000 COP</span></div>
+          <button class="btn-agregar" data-nombre="Casco Colonial" data-precio="1360000">🛒 Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="tarjeta aparecer" data-tipo="naturaleza">
+        <div class="foto">
+          <img src="img/selva.png" alt="Cascada en medio de la selva tropical" loading="lazy" />
+          <span class="tipo">Naturaleza</span>
+        </div>
+        <div class="cuerpo">
+          <h3>Selva y Cascadas</h3>
+          <p>Caminatas por la selva, fauna exótica y cascadas para refrescarse.</p>
+          <div class="pie"><span>★ 4.9 · 4 días</span><span class="precio">Desde $1.920.000 COP</span></div>
+          <button class="btn-agregar" data-nombre="Selva y Cascadas" data-precio="1920000">🛒 Agregar al carrito</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXPERIENCIAS ===== -->
+<section class="seccion experiencias" id="experiencias">
+  <div class="contenedor">
+    <p class="etiqueta">Qué hacer</p>
+    <h2 class="titulo">Experiencias para cada viajero</h2>
+    <div class="grid-exp">
+      <div class="exp aparecer"><div class="icono">⛰️</div><h3>Aventura</h3><p>Senderismo, kayak, parapente y rutas guiadas por expertos locales.</p></div>
+      <div class="exp aparecer"><div class="icono">🍽️</div><h3>Gastronomía</h3><p>Tours de sabores, mercados tradicionales y clases de cocina típica.</p></div>
+      <div class="exp aparecer"><div class="icono">🏛️</div><h3>Cultura</h3><p>Museos, festivales, artesanía y visitas a comunidades con historia.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONSEJOS ===== -->
+<section class="seccion" id="consejos">
+  <div class="contenedor dividido">
+    <img class="aparecer" src="img/montana.png" alt="Sendero de montaña" loading="lazy" />
+    <div class="aparecer">
+      <p class="etiqueta">Viaja mejor</p>
+      <h2 class="titulo">Consejos para tu viaje</h2>
+      <ul class="lista-consejos">
+        <li><b>01</b><span>Reserva con anticipación para conseguir mejores precios en temporada alta.</span></li>
+        <li><b>02</b><span>Lleva ropa ligera, protector solar y una botella reutilizable.</span></li>
+        <li><b>03</b><span>Contrata guías locales: apoyas a la comunidad y conoces más.</span></li>
+        <li><b>04</b><span>Respeta la naturaleza: no dejes basura y sigue los senderos marcados.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIOS ===== -->
+<section class="seccion testimonios">
+  <div class="contenedor">
+    <p class="etiqueta" style="color:#ffd2b8">Opiniones</p>
+    <h2 class="titulo">Lo que dicen nuestros viajeros</h2>
+    <div class="testimonio" id="testimonio">
+      <blockquote>"La mejor experiencia de mi vida. Todo estuvo perfectamente organizado y los guías fueron increíbles."</blockquote>
+      <cite>- María G., Costa Turquesa</cite>
+    </div>
+    <div class="puntos" id="puntos"></div>
+  </div>
+</section>
+
+<!-- ===== CONTACTO ===== -->
+<section class="seccion" id="contacto">
+  <div class="contenedor dividido">
+    <div>
+      <p class="etiqueta">Contacto</p>
+      <h2 class="titulo">Planifiquemos tu próxima aventura</h2>
+      <p style="color:var(--suave)">Cuéntanos a dónde quieres ir y cuándo. Te responderemos con una propuesta a tu medida en menos de 24 horas.</p>
+      <p style="margin-top:1.5rem">📞 +58 319 202 8435<br />✉️ bbbr1660@gmail.com</p>
+    </div>
+    <form class="formulario" id="formulario">
+      <div class="fila">
+        <label>Nombre <input type="text" name="nombre" required /></label>
+        <label>Correo <input type="email" name="correo" required /></label>
+      </div>
+      <div class="fila">
+        <label>Destino
+          <select name="destino">
+            <option>Costa Turquesa</option>
+            <option>Cumbres Andinas</option>
+            <option>Casco Colonial</option>
+            <option>Selva y Cascadas</option>
+            <option>Aún no lo sé</option>
+          </select>
+        </label>
+        <label>Fecha de viaje <input type="date" name="fecha" /></label>
+      </div>
+      <label>Mensaje <textarea name="mensaje" rows="4" placeholder="¿Cuántas personas viajan? ¿Qué te gustaría hacer?"></textarea></label>
+      <button type="submit" class="btn btn-coral">Enviar solicitud</button>
+      <div class="mensaje-ok" id="mensajeOk">¡Gracias! Recibimos tu solicitud y te contactaremos pronto.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ===== PIE DE PÁGINA ===== -->
+<footer>
+  <div class="contenedor">
+    <a href="#inicio" class="logo">Rumbo<span>Vivo</span></a>
+    <p>© <span id="anio"></span> Rumbo Vivo. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<!-- ==================== INTERFAZ DE LOGIN Y CARRITO ==================== -->
+<div id="auth-overlay" style="position:fixed; inset:0; background:rgba(15,23,42,0.96); z-index:9999; display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; padding:16px;">
+  <div style="background:#fff; padding:2rem; border-radius:16px; width:100%; max-width:390px; box-shadow:0 10px 25px rgba(0,0,0,0.4);">
+    <h2 id="auth-title" style="margin-top:0; color:#1d2a2a; font-family:'Fraunces',serif;">Bienvenido a Rumbo Vivo</h2>
+    <p id="auth-subtitle" style="color:#6b7a78; font-size:0.9rem; margin:8px 0 16px;">Inicia sesión para explorar y reservar tus destinos</p>
+
+    <form id="auth-form" style="display:flex; flex-direction:column; gap:12px;">
+      <input type="email" id="auth-email" placeholder="Correo electrónico" required style="padding:11px; border:1.5px solid #e3d8c6; border-radius:10px; background:#f6efe4;">
+      <input type="password" id="auth-password" placeholder="Contraseña (mín. 6 caracteres)" required style="padding:11px; border:1.5px solid #e3d8c6; border-radius:10px; background:#f6efe4;">
+      <button type="submit" id="auth-submit-btn" style="padding:12px; background:#0e6e6e; color:#fff; border:none; border-radius:10px; font-weight:600; cursor:pointer;">Iniciar sesión</button>
+    </form>
+
+    <p id="auth-message" style="font-size:0.85rem; margin-top:12px; color:#dc2626;"></p>
+
+    <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px; font-size:0.85rem; text-align:center;">
+      <a href="#" id="toggle-register" style="color:#0e6e6e; text-decoration:none; font-weight:600;">¿No tienes cuenta? Regístrate aquí</a>
+      <a href="#" id="forgot-password" style="color:#6b7a78; text-decoration:none;">¿Olvidaste tu contraseña? Enviar correo de recuperación</a>
+    </div>
+  </div>
+</div>
+
+<!-- Botones flotantes -->
+<button id="cart-toggle" style="display:none; position:fixed; bottom:70px; right:20px; z-index:9998; padding:12px 18px; background:#0e6e6e; color:#fff; border:none; border-radius:999px; cursor:pointer; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+  🛒 Carrito (<span id="cart-count">0</span>)
+</button>
+
+<button id="logout-btn" style="display:none; position:fixed; bottom:20px; right:20px; z-index:9998; padding:10px 16px; background:#e2704a; color:#fff; border:none; border-radius:999px; cursor:pointer; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+  Cerrar sesión
+</button>
+
+<!-- Panel lateral del Carrito e Historial -->
+<div id="cart-drawer" style="display:none; position:fixed; top:0; right:0; width:100%; max-width:400px; height:100vh; background:#fff; z-index:10000; box-shadow:-5px 0 20px rgba(0,0,0,0.25); padding:20px; overflow-y:auto; font-family:'Outfit',sans-serif; flex-direction:column; box-sizing:border-box;">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e3d8c6; padding-bottom:12px;">
+    <h3 style="margin:0; color:#1d2a2a; font-family:'Fraunces',serif;">Tu Carrito de Viajes</h3>
+    <button id="cart-close" style="background:none; border:none; font-size:1.3rem; cursor:pointer;">✖</button>
+  </div>
+
+  <div id="cart-items" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;"></div>
+
+  <div style="margin-top:20px; padding-top:15px; border-top:2px solid #e3d8c6;">
+    <p style="font-size:1.1rem; font-weight:600; color:#1d2a2a;">Total: $<span id="cart-total">0</span> COP</p>
+    <button id="checkout-btn" style="width:100%; margin-top:10px; padding:12px; background:#0e6e6e; color:#fff; border:none; border-radius:10px; font-weight:600; cursor:pointer;">Confirmar y Registrar Compra</button>
+    <p id="checkout-msg" style="font-size:0.85rem; margin-top:8px; color:#0e6e6e;"></p>
+  </div>
+
+  <div style="margin-top:25px; border-top:1px solid #e3d8c6; padding-top:15px;">
+    <h4 style="margin:0 0 10px 0; color:#1d2a2a;">Mis Compras Registradas</h4>
+    <div id="purchase-history" style="font-size:0.85rem; color:#6b7a78; display:flex; flex-direction:column; gap:8px;">
+      Cargando historial...
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCRIPTS ORIGINALES DE RUMBO VIVO ===== -->
+<script>
+const cabecera = document.getElementById('cabecera');
+addEventListener('scroll', () => cabecera.classList.toggle('solido', scrollY > 60));
+
+const menu = document.getElementById('menu');
+document.getElementById('hamburguesa').onclick = () => menu.classList.toggle('abierto');
+menu.querySelectorAll('a').forEach(a => a.onclick = () => menu.classList.remove('abierto'));
+
+document.querySelectorAll('.filtro').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filtro').forEach(b => b.classList.remove('activo'));
+    btn.classList.add('activo');
+    const f = btn.dataset.filtro;
+    document.querySelectorAll('.tarjeta').forEach(t => {
+      t.style.display = (f === 'todos' || t.dataset.tipo === f) ? '' : 'none';
+    });
+  });
+});
+
+const obs = new IntersectionObserver(entradas => {
+  entradas.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.aparecer').forEach(el => obs.observe(el));
+
+const obsCifras = new IntersectionObserver(entradas => {
+  entradas.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, meta = +el.dataset.contar, inicio = performance.now();
+    const paso = t => {
+      const p = Math.min((t - inicio) / 1500, 1);
+      el.textContent = Math.floor(meta * p).toLocaleString('es') + (p === 1 ? '+' : '');
+      if (p < 1) requestAnimationFrame(paso);
+    };
+    requestAnimationFrame(paso);
+    obsCifras.unobserve(el);
+  });
+});
+document.querySelectorAll('[data-contar]').forEach(el => obsCifras.observe(el));
+
+const testimonios = [
+  ['La mejor experiencia de mi vida. Todo estuvo perfectamente organizado y los guías fueron increíbles.', 'María G., Costa Turquesa'],
+  ['Subir a las cumbres al amanecer fue mágico. Volvería sin pensarlo dos veces.', 'Carlos R., Cumbres Andinas'],
+  ['Comimos delicioso, conocimos la historia de la ciudad y nos sentimos como en casa.', 'Ana y Luis, Casco Colonial']
+];
+const caja = document.getElementById('testimonio'), puntos = document.getElementById('puntos');
+let actual = 0;
+const mostrar = i => {
+  actual = i;
+  caja.innerHTML = `<blockquote>"${testimonios[i][0]}"</blockquote><cite>- ${testimonios[i][1]}</cite>`;
+  puntos.querySelectorAll('button').forEach((b, j) => b.classList.toggle('activo', j === i));
+};
+testimonios.forEach((_, i) => {
+  const b = document.createElement('button');
+  b.setAttribute('aria-label', 'Testimonio ' + (i + 1));
+  b.onclick = () => mostrar(i);
+  puntos.appendChild(b);
+});
+mostrar(0);
+setInterval(() => mostrar((actual + 1) % testimonios.length), 6000);
+
+const formContacto = document.getElementById('formulario');
+formContacto.addEventListener('submit', e => {
+  e.preventDefault();
+  formContacto.reset();
+  document.getElementById('mensajeOk').style.display = 'block';
+});
+
+document.getElementById('anio').textContent = new Date().getFullYear();
+</script>
+
+<!-- ==================== LÓGICA DE FIREBASE (LOGIN + CARRITO + DB) ==================== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    query,
+    where,
+    getDocs,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCDmqZe3-qQHVUR2sE09QGnYvx2oBUpVI",
+    authDomain: "rumbovivo.firebaseapp.com",
+    projectId: "rumbovivo",
+    storageBucket: "rumbovivo.firebasestorage.app",
+    messagingSenderId: "304722342626",
+    appId: "1:304722342626:web:86f5b428a719681d3564bb"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const overlay = document.getElementById("auth-overlay");
+  const logoutBtn = document.getElementById("logout-btn");
+  const form = document.getElementById("auth-form");
+  const emailInput = document.getElementById("auth-email");
+  const passInput = document.getElementById("auth-password");
+  const submitBtn = document.getElementById("auth-submit-btn");
+  const title = document.getElementById("auth-title");
+  const toggleLink = document.getElementById("toggle-register");
+  const forgotLink = document.getElementById("forgot-password");
+  const msg = document.getElementById("auth-message");
+
+  const cartToggle = document.getElementById("cart-toggle");
+  const cartDrawer = document.getElementById("cart-drawer");
+  const cartClose = document.getElementById("cart-close");
+  const cartItemsDiv = document.getElementById("cart-items");
+  const cartCount = document.getElementById("cart-count");
+  const cartTotal = document.getElementById("cart-total");
+  const checkoutBtn = document.getElementById("checkout-btn");
+  const checkoutMsg = document.getElementById("checkout-msg");
+  const historyDiv = document.getElementById("purchase-history");
+
+  let isRegisterMode = false;
+  let carrito = [];
+  let usuarioActual = null;
+
+  onAuthStateChanged(auth, (user) => {
+    usuarioActual = user;
+    if (user) {
+      overlay.style.display = "none";
+      logoutBtn.style.display = "block";
+      cartToggle.style.display = "block";
+      cargarHistorialCompras();
+    } else {
+      overlay.style.display = "flex";
+      logoutBtn.style.display = "none";
+      cartToggle.style.display = "none";
+      cartDrawer.style.display = "none";
+    }
+  });
+
+  toggleLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    isRegisterMode = !isRegisterMode;
+    title.textContent = isRegisterMode ? "Crear cuenta en Rumbo Vivo" : "Bienvenido a Rumbo Vivo";
+    submitBtn.textContent = isRegisterMode ? "Registrarme" : "Iniciar sesión";
+    toggleLink.textContent = isRegisterMode ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate aquí";
+    msg.textContent = "";
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.style.color = "#dc2626";
+    msg.textContent = "Procesando...";
+    try {
+      if (isRegisterMode) {
+        await createUserWithEmailAndPassword(auth, emailInput.value, passInput.value);
+      } else {
+        await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
+      }
+      msg.textContent = "";
+    } catch (error) {
+      msg.textContent = "Error: " + error.message;
+    }
+  });
+
+  forgotLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    if (!email) {
+      msg.style.color = "#dc2626";
+      msg.textContent = "Escribe tu correo electrónico arriba primero para enviarte el enlace.";
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      msg.style.color = "#0e6e6e";
+      msg.textContent = "¡Listo! Revisa tu bandeja de entrada o spam para restablecer tu contraseña.";
+    } catch (error) {
+      msg.style.color = "#dc2626";
+      msg.textContent = "No se pudo enviar el correo: " + error.message;
+    }
+  });
+
+  logoutBtn.addEventListener("click", () => signOut(auth));
+
+  cartToggle.addEventListener("click", () => cartDrawer.style.display = "flex");
+  cartClose.addEventListener("click", () => cartDrawer.style.display = "none");
+
+  document.querySelectorAll(".btn-agregar").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      const nombre = boton.dataset.nombre;
+      const precio = Number(boton.dataset.precio);
+
+      const existente = carrito.find((item) => item.nombre === nombre);
+      if (existente) {
+        existente.cantidad += 1;
+      } else {
+        carrito.push({ nombre, precio, cantidad: 1 });
+      }
+      actualizarVistaCarrito();
+      cartDrawer.style.display = "flex";
+    });
+  });
+
+  function actualizarVistaCarrito() {
+    cartItemsDiv.innerHTML = "";
+    let total = 0;
+    let totalItems = 0;
+
+    carrito.forEach((item, index) => {
+      total += item.precio * item.cantidad;
+      totalItems += item.cantidad;
+
+      const div = document.createElement("div");
+      div.style = "display:flex; justify-content:space-between; align-items:center; background:#f6efe4; padding:10px; border-radius:8px;";
+      div.innerHTML = `
+        <div>
+          <strong>${item.nombre}</strong><br>
+          <small>$${item.precio.toLocaleString("es-CO")} COP x ${item.cantidad}</small>
+        </div>
+        <button data-index="${index}" class="btn-eliminar" style="background:#e2704a; color:#fff; border:none; border-radius:6px; padding:5px 10px; cursor:pointer;">Quitar</button>
+      `;
+      cartItemsDiv.appendChild(div);
+    });
+
+    cartCount.textContent = totalItems;
+    cartTotal.textContent = total.toLocaleString("es-CO");
+
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        carrito.splice(btn.dataset.index, 1);
+        actualizarVistaCarrito();
+      });
+    });
+  }
+
+  checkoutBtn.addEventListener("click", async () => {
+    if (!usuarioActual) return;
+    if (carrito.length === 0) {
+      checkoutMsg.style.color = "#dc2626";
+      checkoutMsg.textContent = "El carrito está vacío.";
+      return;
+    }
+
+    const totalCompra = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+
+    try {
+      checkoutBtn.disabled = true;
+      checkoutMsg.style.color = "#1d2a2a";
+      checkoutMsg.textContent = "Guardando compra en la base de datos...";
+
+      await addDoc(collection(db, "compras"), {
+        usuarioId: usuarioActual.uid,
+        correo: usuarioActual.email,
+        productos: carrito,
+        totalCOP: totalCompra,
+        fecha: serverTimestamp()
+      });
+
+      carrito = [];
+      actualizarVistaCarrito();
+      checkoutMsg.style.color = "#0e6e6e";
+      checkoutMsg.textContent = "¡Compra registrada exitosamente!";
+      cargarHistorialCompras();
+    } catch (error) {
+      checkoutMsg.style.color = "#dc2626";
+      checkoutMsg.textContent = "Error al guardar: " + error.message;
+    } finally {
+      checkoutBtn.disabled = false;
+    }
+  });
+
+  async function cargarHistorialCompras() {
+    if (!usuarioActual) return;
+    historyDiv.innerHTML = "Cargando...";
+    try {
+      const q = query(collection(db, "compras"), where("usuarioId", "==", usuarioActual.uid));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        historyDiv.innerHTML = "Aún no tienes compras registradas.";
+        return;
+      }
+
+      historyDiv.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const listaNombres = data.productos.map(p => `${p.nombre} (x${p.cantidad})`).join(", ");
+        const itemHistorial = document.createElement("div");
+        itemHistorial.style = "background:#f6efe4; padding:10px; border-radius:8px;";
+        itemHistorial.innerHTML = `
+          <strong>Paquetes:</strong> ${listaNombres}<br>
+          <strong>Total:</strong> $${data.totalCOP.toLocaleString("es-CO")} COP
+        `;
+        historyDiv.appendChild(itemHistorial);
+      });
+    } catch (error) {
+      historyDiv.innerHTML = "Error al cargar historial.";
+    }
+  }
+</script>
+
+</body>
+</html>
